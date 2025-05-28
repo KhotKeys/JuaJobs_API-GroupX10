@@ -58,6 +58,11 @@ Covers use-case personas, API flows, offline design, and payment workflows.
 
 ---
 
+### Presentation
+ Stakeholder & Team Presentation Slides  [View Canva/Google Slides Here](https://www.canva.com/design/DAGorIn2Jt0/gWQFmBTN-DN-6r4BPwagPA/edit)
+
+---
+
 ##  Getting Started
 
 ### Local Setup
