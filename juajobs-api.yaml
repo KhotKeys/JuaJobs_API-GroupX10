@@ -1,0 +1,378 @@
+openapi: 3.0.3
+info:
+  title: JuaJobs API
+  description: |
+    Gig economy platform connecting African skilled workers with clients.
+    Key features:
+      - Job postings
+      - User profiles
+      - Job applications
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@juajobs.com
+  license:
+    name: Proprietary
+
+servers:
+  - url: https://api.juajobs.com/v1
+    description: Production server
+  - url: https://sandbox.juajobs.com/v1
+    description: Testing environment
+
+tags:
+  - name: Jobs
+    description: Job posting operations
+  - name: Users
+    description: User account management
+  - name: Applications
+    description: Job application handling
+
+paths:
+  # ======================
+  # JOBS ENDPOINTS
+  # ======================
+  /jobs:
+    get:
+      tags: [Jobs]
+      summary: List all job postings
+      description: |
+        Returns paginated job listings with optional filters.
+        Example: `/jobs?category=IT&location=Nairobi`
+      parameters:
+        - $ref: "#/components/parameters/categoryFilter"
+        - $ref: "#/components/parameters/locationFilter"
+        - $ref: "#/components/parameters/pageNumber"
+        - $ref: "#/components/parameters/pageSize"
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobListResponse"
+        400:
+          $ref: "#/components/responses/BadRequest"
+
+    post:
+      tags: [Jobs]
+      summary: Create a job posting
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JobPostingInput"
+            example:
+              title: "Mobile App Developer"
+              description: "Need Flutter developer for e-commerce app"
+              category: "Technology"
+              location: "Lagos"
+              budget: 1200.00
+      responses:
+        201:
+          description: Job created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobPosting"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+
+  /jobs/{id}:
+    get:
+      tags: [Jobs]
+      summary: Get job by ID
+      parameters:
+        - $ref: "#/components/parameters/jobId"
+      responses:
+        200:
+          description: Job details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobPosting"
+        404:
+          $ref: "#/components/responses/NotFound"
+
+  # ======================
+  # USERS ENDPOINTS
+  # ======================
+  /users:
+    post:
+      tags: [Users]
+      summary: Register new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRegisterInput"
+            example:
+              name: "John Doe"
+              email: "john@example.com"
+              password: "SecurePass123!"
+              user_type: "client"
+      responses:
+        201:
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  # ======================
+  # APPLICATIONS ENDPOINTS
+  # ======================
+  /applications:
+    post:
+      tags: [Applications]
+      summary: Submit job application
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationInput"
+      responses:
+        201:
+          description: Application submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Application"
+
+components:
+  # ======================
+  # SECURITY SCHEMES
+  # ======================
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: >
+        Use JWT token for authentication.
+        Example: `Authorization: Bearer {token}`
+
+  # ======================
+  # PARAMETERS (Reusable)
+  # ======================
+  parameters:
+    jobId:
+      name: id
+      in: path
+      required: true
+      description: Job ID
+      schema:
+        type: integer
+        example: 42
+
+    categoryFilter:
+      name: category
+      in: query
+      description: Filter by job category
+      schema:
+        type: string
+        enum: [Technology, Construction, Education, Healthcare]
+    
+    locationFilter:
+      name: location
+      in: query
+      description: Filter by job location
+      schema:
+        type: string
+        example: "Nairobi"
+
+    pageNumber:
+      name: page
+      in: query
+      description: Page number
+      schema:
+        type: integer
+        default: 1
+
+    pageSize:
+      name: pageSize
+      in: query
+      description: Number of items per page
+      schema:
+        type: integer
+        default: 20
+        maximum: 100
+
+  # ======================
+  # SCHEMAS (Data Models)
+  # ======================
+  schemas:
+    JobPosting:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 42
+        title:
+          type: string
+          example: "Backend Developer"
+        description:
+          type: string
+        category:
+          type: string
+          enum: [Technology, Construction, Education]
+        location:
+          type: string
+        budget:
+          type: number
+          format: float
+          example: 500.00
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required: [title, description, category, location]
+
+    JobListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/JobPosting"
+        pagination:
+          type: object
+          properties:
+            current_page:
+              type: integer
+            total_pages:
+              type: integer
+            total_items:
+              type: integer
+
+    JobPostingInput:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+          enum: [Technology, Construction, Education]
+        location:
+          type: string
+        budget:
+          type: number
+          format: float
+      required: [title, description, category, location]
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        user_type:
+          type: string
+          enum: [client, worker]
+
+    UserRegisterInput:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+          minLength: 8
+        user_type:
+          type: string
+          enum: [client, worker]
+      required: [name, email, password, user_type]
+
+    Application:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        job_id:
+          type: integer
+        worker_id:
+          type: integer
+        status:
+          type: string
+          enum: [pending, accepted, rejected]
+        created_at:
+          type: string
+          format: date-time
+
+    ApplicationInput:
+      type: object
+      properties:
+        job_id:
+          type: integer
+        cover_letter:
+          type: string
+      required: [job_id]
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            type: string
+
+  # ======================
+  # RESPONSES (Reusable)
+  # ======================
+  responses:
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            error: "Bad Request"
+            message: "Invalid category parameter"
+
+    Unauthorized:
+      description: Missing or invalid authentication
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            error: "Unauthorized"
+            message: "Valid JWT token required"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            error: "Not Found"
+            message: "Job with ID 999 does not exist"
+
+security:
+  - BearerAuth: []
