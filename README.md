@@ -85,7 +85,9 @@ Covers:
 
 5. **Access development server**
 
-   * API: `http://127.0.0.1:8000/api/v1/jobs/`
+   * API: `http://127.0.0.1:8000/api/jobs/`
+   * Jobs: `http://127.0.0.1:8000/jobs/`
+   * Sign up/ Sign In: `http://127.0.0.1:8000/login/`
    * Admin Panel: `http://127.0.0.1:8000/admin/`
 
 ---
