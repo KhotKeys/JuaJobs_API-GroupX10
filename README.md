@@ -1,7 +1,3 @@
-Here's a professional and complete `README.md` for your **JuaJobs\_API-GroupX10** project. It includes clear documentation structure, links to your Google Docs, and a placeholder for your upcoming Canva/Google Slides presentation:
-
----
-
 # 🛠️ JuaJobs\_API-GroupX10
 
 **Connecting skilled workers to clients across Africa — starting with Rwanda.**
