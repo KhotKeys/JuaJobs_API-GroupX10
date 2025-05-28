@@ -25,6 +25,8 @@ A RESTful API backend for the JuaJobs platform designed to support job listings,
 
 ##  Documentation
 
+we tested our swagger api using  Swagger Editor
+
 ### 📄 API Documentation (OpenAPI Structure)
 
 🔗 [JuaJobs API Spec & ERD](https://docs.google.com/document/d/1m40c0K7Lsxi34NLKKlE6wrZxPwEzvIRiRe-1AZeOAt8/edit?usp=sharing)
