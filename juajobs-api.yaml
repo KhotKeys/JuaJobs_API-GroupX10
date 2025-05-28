@@ -1,3 +1,8 @@
+###############################################################################
+#                              API METADATA                                   #
+# --------------------------------------------------------------------------- #
+# Basic information about the API: title, description, version, and contact.  #
+###############################################################################
 openapi: 3.0.3
 info:
   title: JuaJobs API
@@ -14,24 +19,37 @@ info:
   license:
     name: Proprietary
 
+###############################################################################
+#                               SERVERS                                       #
+# --------------------------------------------------------------------------- #
+# Define where the API is hosted (production and testing environments).       #
+###############################################################################
 servers:
   - url: https://api.juajobs.com/v1
-    description: Production server
+    description: Production server (live environment)
   - url: https://sandbox.juajobs.com/v1
-    description: Testing environment
+    description: Testing environment (for developers)
 
+###############################################################################
+#                                 TAGS                                        #
+# --------------------------------------------------------------------------- #
+# Logical grouping of endpoints (for Swagger UI organization).                #
+###############################################################################
 tags:
   - name: Jobs
-    description: Job posting operations
+    description: Job posting operations (create, list, view jobs)
   - name: Users
-    description: User account management
+    description: User account management (registration, profiles)
   - name: Applications
-    description: Job application handling
+    description: Job application handling (submit, track applications)
 
+###############################################################################
+#                               PATHS                                         #
+# --------------------------------------------------------------------------- #
+# All API endpoints with their parameters, requests, and responses.           #
+###############################################################################
 paths:
-  # ======================
-  # JOBS ENDPOINTS
-  # ======================
+  # ====================== JOBS ENDPOINTS ====================== #
   /jobs:
     get:
       tags: [Jobs]
@@ -40,32 +58,32 @@ paths:
         Returns paginated job listings with optional filters.
         Example: `/jobs?category=IT&location=Nairobi`
       parameters:
-        - $ref: "#/components/parameters/categoryFilter"
-        - $ref: "#/components/parameters/locationFilter"
-        - $ref: "#/components/parameters/pageNumber"
-        - $ref: "#/components/parameters/pageSize"
+        - $ref: "#/components/parameters/categoryFilter"   # Filter by job category
+        - $ref: "#/components/parameters/locationFilter"  # Filter by location
+        - $ref: "#/components/parameters/pageNumber"      # Pagination: page number
+        - $ref: "#/components/parameters/pageSize"        # Pagination: items per page
       responses:
         200:
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/JobListResponse"
+                $ref: "#/components/schemas/JobListResponse"  # Paginated job list
         400:
-          $ref: "#/components/responses/BadRequest"
+          $ref: "#/components/responses/BadRequest"  # Invalid filters/parameters
 
     post:
       tags: [Jobs]
       summary: Create a job posting
       security:
-        - BearerAuth: []
+        - BearerAuth: []  # Requires JWT authentication
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/JobPostingInput"
-            example:
+              $ref: "#/components/schemas/JobPostingInput"  # Input schema for job creation
+            example:  # Sample request payload
               title: "Mobile App Developer"
               description: "Need Flutter developer for e-commerce app"
               category: "Technology"
@@ -73,33 +91,32 @@ paths:
               budget: 1200.00
       responses:
         201:
-          description: Job created
+          description: Job created successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/JobPosting"
+                $ref: "#/components/schemas/JobPosting"  # Returns created job
         401:
-          $ref: "#/components/responses/Unauthorized"
+          $ref: "#/components/responses/Unauthorized"  # Missing/invalid token
 
+  # --- Single Job Endpoint --- #
   /jobs/{id}:
     get:
       tags: [Jobs]
       summary: Get job by ID
       parameters:
-        - $ref: "#/components/parameters/jobId"
+        - $ref: "#/components/parameters/jobId"  # Path parameter: job ID
       responses:
         200:
           description: Job details
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/JobPosting"
+                $ref: "#/components/schemas/JobPosting"  # Full job data
         404:
-          $ref: "#/components/responses/NotFound"
+          $ref: "#/components/responses/NotFound"  # Job not found
 
-  # ======================
-  # USERS ENDPOINTS
-  # ======================
+  # ====================== USERS ENDPOINTS ====================== #
   /users:
     post:
       tags: [Users]
@@ -109,8 +126,8 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UserRegisterInput"
-            example:
+              $ref: "#/components/schemas/UserRegisterInput"  # Registration fields
+            example:  # Sample registration payload
               name: "John Doe"
               email: "john@example.com"
               password: "SecurePass123!"
@@ -121,35 +138,36 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: "#/components/schemas/User"  # Returns user data (without password)
 
-  # ======================
-  # APPLICATIONS ENDPOINTS
-  # ======================
+  # ====================== APPLICATIONS ENDPOINTS ====================== #
   /applications:
     post:
       tags: [Applications]
       summary: Submit job application
       security:
-        - BearerAuth: []
+        - BearerAuth: []  # Requires authentication
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ApplicationInput"
+              $ref: "#/components/schemas/ApplicationInput"  # Application data
       responses:
         201:
           description: Application submitted
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Application"
+                $ref: "#/components/schemas/Application"  # Returns application record
 
+###############################################################################
+#                             COMPONENTS                                      #
+# --------------------------------------------------------------------------- #
+# Reusable schemas, parameters, and responses to avoid duplication.          #
+###############################################################################
 components:
-  # ======================
-  # SECURITY SCHEMES
-  # ======================
+  # ====================== SECURITY SCHEMES ====================== #
   securitySchemes:
     BearerAuth:
       type: http
@@ -159,15 +177,13 @@ components:
         Use JWT token for authentication.
         Example: `Authorization: Bearer {token}`
 
-  # ======================
-  # PARAMETERS (Reusable)
-  # ======================
+  # ====================== PARAMETERS ====================== #
   parameters:
     jobId:
       name: id
       in: path
       required: true
-      description: Job ID
+      description: Unique ID of the job
       schema:
         type: integer
         example: 42
@@ -175,15 +191,15 @@ components:
     categoryFilter:
       name: category
       in: query
-      description: Filter by job category
+      description: Filter jobs by category
       schema:
         type: string
-        enum: [Technology, Construction, Education, Healthcare]
+        enum: [Technology, Construction, Education, Healthcare]  # Allowed values
     
     locationFilter:
       name: location
       in: query
-      description: Filter by job location
+      description: Filter jobs by location
       schema:
         type: string
         example: "Nairobi"
@@ -191,24 +207,24 @@ components:
     pageNumber:
       name: page
       in: query
-      description: Page number
+      description: Page number for pagination
       schema:
         type: integer
         default: 1
+        minimum: 1
 
     pageSize:
       name: pageSize
       in: query
-      description: Number of items per page
+      description: Number of items per page (max 100)
       schema:
         type: integer
         default: 20
         maximum: 100
 
-  # ======================
-  # SCHEMAS (Data Models)
-  # ======================
+  # ====================== SCHEMAS (Data Models) ====================== #
   schemas:
+    # ----- Job-Related Schemas ----- #
     JobPosting:
       type: object
       properties:
@@ -223,7 +239,7 @@ components:
           type: string
         category:
           type: string
-          enum: [Technology, Construction, Education]
+          enum: [Technology, Construction, Education]  # Allowed categories
         location:
           type: string
         budget:
@@ -234,7 +250,7 @@ components:
           type: string
           format: date-time
           readOnly: true
-      required: [title, description, category, location]
+      required: [title, description, category, location]  # Mandatory fields
 
     JobListResponse:
       type: object
@@ -242,7 +258,7 @@ components:
         data:
           type: array
           items:
-            $ref: "#/components/schemas/JobPosting"
+            $ref: "#/components/schemas/JobPosting"  # List of jobs
         pagination:
           type: object
           properties:
@@ -268,8 +284,9 @@ components:
         budget:
           type: number
           format: float
-      required: [title, description, category, location]
+      required: [title, description, category, location]  # Required for job creation
 
+    # ----- User-Related Schemas ----- #
     User:
       type: object
       properties:
@@ -283,7 +300,7 @@ components:
           format: email
         user_type:
           type: string
-          enum: [client, worker]
+          enum: [client, worker]  # User roles
 
     UserRegisterInput:
       type: object
@@ -296,12 +313,13 @@ components:
         password:
           type: string
           format: password
-          minLength: 8
+          minLength: 8  # Password requirement
         user_type:
           type: string
           enum: [client, worker]
-      required: [name, email, password, user_type]
+      required: [name, email, password, user_type]  # All fields required for registration
 
+    # ----- Application-Related Schemas ----- #
     Application:
       type: object
       properties:
@@ -314,7 +332,7 @@ components:
           type: integer
         status:
           type: string
-          enum: [pending, accepted, rejected]
+          enum: [pending, accepted, rejected]  # Possible statuses
         created_at:
           type: string
           format: date-time
@@ -326,23 +344,22 @@ components:
           type: integer
         cover_letter:
           type: string
-      required: [job_id]
+      required: [job_id]  # Minimum required to apply
 
+    # ----- Error Handling ----- #
     Error:
       type: object
       properties:
         error:
-          type: string
+          type: string  # Error type (e.g., "Bad Request")
         message:
-          type: string
+          type: string  # Human-readable explanation
         details:
-          type: array
+          type: array   # Optional detailed errors
           items:
             type: string
 
-  # ======================
-  # RESPONSES (Reusable)
-  # ======================
+  # ====================== REUSABLE RESPONSES ====================== #
   responses:
     BadRequest:
       description: Invalid request parameters
@@ -374,5 +391,10 @@ components:
             error: "Not Found"
             message: "Job with ID 999 does not exist"
 
+###############################################################################
+#                             SECURITY                                        #
+# --------------------------------------------------------------------------- #
+# Global security requirement (JWT auth for all endpoints by default).        #
+###############################################################################
 security:
-  - BearerAuth: []
+  - BearerAuth: []  # Applies to all endpoints unless overridden
