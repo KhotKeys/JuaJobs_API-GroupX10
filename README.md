@@ -103,7 +103,7 @@ Covers:
 ## 📊 Presentation
 
 🎤 **Stakeholder & Team Presentation Slides**
-📎 [*Coming Soon – View Canva/Google Slides Here*](#)
+📎 [*Coming Soon – View Canva/Google Slides Here*](https://www.canva.com/design/DAGorIn2Jt0/gWQFmBTN-DN-6r4BPwagPA/edit)
 
 *(You’ll update this with the final link when the presentation deck is ready.)*
 
