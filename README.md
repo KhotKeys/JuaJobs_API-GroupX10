@@ -1,17 +1,17 @@
-# 🛠️ JuaJobs\_API-GroupX10
+#  JuaJobs\_API-GroupX10
 
 **Connecting skilled workers to clients across Africa — starting with Rwanda.**
 A RESTful API backend for the JuaJobs platform designed to support job listings, secure payments, skill-based matchmaking, and localized offline-first experiences.
 
 ---
 
-## 🌍 Project Description
+##  Project Description
 
 **JuaJobs** is a mobile-first, inclusive platform that enables clients to post jobs and workers to apply for them. It leverages mobile money integrations, geolocation filters, multilingual support, and an offline-sync design — ideal for users in low-bandwidth environments.
 
 ---
 
-## 🚀 Tech Stack
+##  Tech Stack
 
 * **Backend Framework**: Django + Django REST Framework
 * **Database**: PostgreSQL
@@ -23,7 +23,7 @@ A RESTful API backend for the JuaJobs platform designed to support job listings,
 
 ---
 
-## 📚 Documentation
+##  Documentation
 
 ### 📄 API Documentation (OpenAPI Structure)
 
@@ -39,7 +39,7 @@ Includes:
 
 ---
 
-### 🗂️ Full Project & Functional Documentation
+###  Full Project & Functional Documentation
 
 🔗 [JuaJobs Full Functional and Architecture Doc](https://docs.google.com/document/d/1HmTD2_SmpRl7EwMgQIzeltMcq4oBDWom8y6-qqBRAdc/edit?tab=t.0#heading=h.9k2n33hnzlao)
 
@@ -54,7 +54,7 @@ Covers:
 
 ---
 
-## 🧪 Getting Started (Local Setup)
+##  Getting Started (Local Setup)
 
 1. **Clone the repository**
 
@@ -100,23 +100,9 @@ Covers:
 
 ---
 
-## 📊 Presentation
+##  Presentation
 
 🎤 **Stakeholder & Team Presentation Slides**
 📎 [*View Canva/Google Slides Here*](https://www.canva.com/design/DAGorIn2Jt0/gWQFmBTN-DN-6r4BPwagPA/edit)
 
-*(You’ll update this with the final link when the presentation deck is ready.)*
 
----
-
-## 🧾 License
-
-MIT License
-© 2025 JuaJobs\_API-GroupX10
-
----
-
-## 🤝 Contributing
-
-We welcome pull requests and ideas for expansion!
-Please read `CONTRIBUTING.md` before getting started.
